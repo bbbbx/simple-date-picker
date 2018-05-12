@@ -69,3 +69,12 @@
   color: white;
   background: #1abc9c;
 }
+
+.ui-datepicker-wrapper .ui-datepicker-body table td.disabled {
+  color: rgba(66, 66, 66, .3);
+  background: white;
+}
+
+.ui-datepicker-wrapper .ui-datepicker-body table td.disabled:hover {
+  cursor: default;
+}

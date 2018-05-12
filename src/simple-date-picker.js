@@ -1,7 +1,5 @@
 (function() {
   var datepicker = {};
-  var monthDate;
-  var $wrapper;
 
   /**
    * 将 Date 对象格式化成的字符串，例如：2018-05-12
@@ -85,17 +83,24 @@
 
   /**
    * 生成日历 HTML 字符串
+   * @param {Node} $wrapper
    * @param {number} year 
    * @param {number} month 
    * @return {string} html
    */
-  datepicker.createHTML = function(year, month) {
-    monthDate = datepicker.getMonthDate(year, month);
+  datepicker.createHTML = function($wrapper, year, month) {
+    year = year || new Date().getFullYear();
+    month = month || new Date().getMonth()+1;
+    if (month === 13) {
+      year++;
+      month = 1
+    }
+    $wrapper.monthDate = datepicker.getMonthDate(year, month);
 
     var html = '<div class="ui-datepicker-header">' + 
                   '<span class="ui-datepicker-btn ui-datepicker-prev-btn">&lt;</span>' +
                   '<span class="ui-datepicker-btn ui-datepicker-next-btn">&gt;</span>' +
-                  '<span class="ui-datepicker-curr-month">' + monthDate.year + '-' + monthDate.month  + '</span>' +
+                  '<span class="ui-datepicker-curr-month">' + $wrapper.monthDate.year + '-' + $wrapper.monthDate.month  + '</span>' +
                 '</div>' + 
                 '<div class="ui-datepicker-body">' +
                   '<table>' +
@@ -112,12 +117,16 @@
                     '</thead>' +
                     '<tbody>';
 
-    for (var i = 0; i < monthDate.days.length; i++) {
-      var date = monthDate.days[i];
+    for (var i = 0; i < $wrapper.monthDate.days.length; i++) {
+      var date = $wrapper.monthDate.days[i];
       if (i % 7 === 0) {
         html += '<tr>';
       }
-      html += '<td data-date="' + date.date + '">' + date.showDate + '</td>';
+      if (month === $wrapper.monthDate.days[i].month) {
+        html += '<td data-date="' + date.date + '">' + date.showDate + '</td>';
+      } else {
+        html += '<td class="disabled" data-date="' + date.date + '">' + date.showDate + '</td>';
+      }
       if (i % 7 === 6) {
         html += '</tr>';
       }
@@ -131,36 +140,38 @@
   };
 
   /**
-   * 
-   * @param {string} direction
+   * 给日历节点 $wrapper 添加 innerHTML
+   * @param {Node} $wrapper
+   * @param {string} direction 
    */
-  datepicker.render = function(direction) {
-    var year = monthDate? monthDate.year: undefined;
-    var month = monthDate? monthDate.month: undefined;
+  datepicker.render = function($wrapper, direction) {
+    var year = $wrapper.monthDate? $wrapper.monthDate.year: undefined;
+    var month = $wrapper.monthDate? $wrapper.monthDate.month: undefined;
     if (direction === 'prev') {
       month--;
       if (month === 0) {
         month = 12;
         year--;
-      } 
+      }
     }
     if (direction === 'next') month++;
 
-    var html = datepicker.createHTML(year, month);
+    var html = datepicker.createHTML($wrapper, year, month);
     $wrapper.innerHTML = html;
   }
 
   /**
-   * 
+   * 初始化日历 DOM，绑定 $input 点击事件
    * @param {DOMNode} $input
    */
   datepicker.init = function($input) {
     var isOpen = false;
-    $wrapper = document.createElement('div');
+    var $wrapper = document.createElement('div');
     $wrapper.className = 'ui-datepicker-wrapper';
 
-    datepicker.render();
+    datepicker.render($wrapper);
 
+    // $input 点击事件，显示日历 Node
     $input.addEventListener('click', function() {
       if (isOpen) {
         $wrapper.classList.remove('ui-datepicker-wrapper-show');
@@ -176,24 +187,25 @@
       }
     }, false);
 
+    // 日历 Dode 点击事件，渲染日历日期
     $wrapper.addEventListener('click', function(e) {
       var $target = e.target;
       if (!$target.classList.contains('ui-datepicker-btn')) {
         return ;
       }
       if ($target.classList.contains('ui-datepicker-prev-btn')) {
-        datepicker.render('prev');
+        datepicker.render($wrapper, 'prev');
       } else if ($target.classList.contains('ui-datepicker-next-btn')) {
-        datepicker.render('next');
+        datepicker.render($wrapper, 'next');
       }
     }, false);
 
-    
+    // 日历 Dode 点击事件，获取日期值给 $input.value
     $wrapper.addEventListener('click', function(e) {
       var $target = e.target;
-      if ($target.tagName.toLowerCase() !== 'td') return ;
+      if ($target.tagName.toLowerCase() !== 'td' || $target.classList.contains('disabled')) return ;
 
-      var date = new Date(monthDate.year, monthDate.month - 1, $target.dataset.date);
+      var date = new Date($wrapper.monthDate.year, $wrapper.monthDate.month - 1, $target.dataset.date);
 
       $input.value = datepicker.format(date);
       $wrapper.classList.remove('ui-datepicker-wrapper-show');
