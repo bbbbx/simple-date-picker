@@ -64,6 +64,11 @@
   font-size: 10px;
 }
 
+.ui-datepicker-wrapper .ui-datepicker-body table td.today {
+  color: white;
+  background: #1abc9c;
+}
+
 .ui-datepicker-wrapper .ui-datepicker-body table td:hover {
   cursor: pointer;
   color: white;

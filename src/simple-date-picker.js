@@ -1,5 +1,6 @@
 (function() {
   var datepicker = {};
+  window.datepicker = datepicker;
 
   /**
    * 将 Date 对象格式化成的字符串，例如：2018-05-12
@@ -122,11 +123,17 @@
       if (i % 7 === 0) {
         html += '<tr>';
       }
-      if (month === $wrapper.monthDate.days[i].month) {
+      
+      if ($wrapper.monthDate.year === new Date().getFullYear() &&
+          $wrapper.monthDate.month === new Date().getMonth() + 1  &&
+          $wrapper.monthDate.days[i].showDate === new Date().getDate()) {
+        html += '<td class="today" data-date="' + date.date + '">' + date.showDate + '</td>';
+      } else if (month === $wrapper.monthDate.days[i].month) {
         html += '<td data-date="' + date.date + '">' + date.showDate + '</td>';
       } else {
         html += '<td class="disabled" data-date="' + date.date + '">' + date.showDate + '</td>';
       }
+
       if (i % 7 === 6) {
         html += '</tr>';
       }
@@ -214,7 +221,5 @@
 
     document.body.appendChild($wrapper);
   };
-
-  window.datepicker = datepicker;
 
 })();
