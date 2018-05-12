@@ -3,7 +3,7 @@
 
 ## Usage
 
-[Live demo](http://venusworld.cn/simple-data-picker)
+[Live demo](http://venusworld.cn/simple-data-picker/)
 
 Firstly, add `simple-date-picker.css` to your HTML file:
 
