@@ -30,15 +30,13 @@
   datepicker.getMonthDate = function(year, month) {
     var ret = [];
     var today = new Date();
+    var row;
     year = year || today.getFullYear();
     month = month || today.getMonth() + 1;
 
     var firstDay = new Date(year, month - 1, 1);
     var firstDayWeekDay = firstDay.getDay();
     firstDayWeekDay = firstDayWeekDay === 0? 7: firstDayWeekDay;
-
-    year = firstDay.getFullYear();
-    month = firstDay.getMonth() + 1;
 
     var lastDayOfLastMonth = new Date(year, month - 1, 0);
     var lastDateOfLastMonth = lastDayOfLastMonth.getDate();
@@ -47,7 +45,12 @@
     var lastDay = new Date(year, month, 0);
     var lastDate = lastDay.getDate();
 
-    for (var i = 0; i < 7 * 6; i++) {
+    year = firstDay.getFullYear();
+    month = firstDay.getMonth() + 1;
+
+    row = firstDayWeekDay - 1 + lastDate > 28? (firstDayWeekDay - 1 + lastDate > 35? 6: 5): 4;
+
+    for (var i = 0; i < 7 * row; i++) {
       var date = i + 1 - prevMonthDayCount;
       var showDate = date;
       var thisMonth = month;
