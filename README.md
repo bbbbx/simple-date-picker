@@ -1,9 +1,9 @@
-# simple-data-picker
-📅Just a simple data picker component.
+# simple-date-picker
+📅Just a simple date picker component.
 
 ## Usage
 
-[Live demo](http://venusworld.cn/simple-data-picker/)
+[Live demo](http://venusworld.cn/simple-date-picker/)
 
 Firstly, add `simple-date-picker.css` to your HTML file:
 
